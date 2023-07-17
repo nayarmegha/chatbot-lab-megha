@@ -7,23 +7,64 @@ const CHATBOT_USER_OBJ = {
   avatar: "https://loremflickr.com/140/140",
 };
 
+var requestOptions = {
+  method: "GET",
+  redirect: "follow",
+};
+
 export default function App() {
   const [messages, setMessages] = useState([]);
+  const [respond, setRespond] = useState(true);
+  const [status, setStatus] = useState(0);
+  const [answer, setAnswer] = useState(["Answer 1", "Answer 2", "Answer 3"]);
+  const [question, setQuestion] = useState([
+    "Question 1",
+    "Question 2",
+    "Question 3",
+  ]);
+  const [quiz, setQuiz] = useState({
+    quest: "",
+    ans: "",
+  });
 
   useEffect(() => {
     setMessages([
       {
         _id: 1,
-        text: "Hello, welcome to simple trivia! Say 'Yes' when you're ready to play!",
+        text: "Hello, welcome to simple trivia! Say 'Yes' when you're ready to play! Say 'Random Quiz' if you want to play a quiz",
         createdAt: new Date(),
         user: CHATBOT_USER_OBJ,
       },
     ]);
   }, []);
 
+  function createNewQuiz() {
+    fetch("https://the-trivia-api.com/v2/questions", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        const question = result[0].question["text"];
+        const answer = result[0].correctAnswer;
+        setQuiz({
+          quest: result[0].question["text"],
+          ans: result[0].correctAnswer,
+        });
+        console.log("first: ", quiz.quest);
+        console.log("first: ", quiz.ans);
+        console.log(result[0].question["text"]);
+        console.log(result[0].correctAnswer);
+        return question;
+      })
+      .then((question) => {
+        console.log("second: ", quiz.quest);
+        console.log("second: ", quiz.ans);
+        addBotMessage(question);
+      })
+      .catch((error) => console.log("error", error));
+  }
+
   const addNewMessage = (newMessages) => {
     setMessages((previousMessages) => {
-      // console.log("PREVIOUS MESSAGES:", previousMessages);
+      //console.log("PREVIOUS MESSAGES:", previousMessages);
       // console.log("NEW MESSAGE:", newMessages);
       return GiftedChat.append(previousMessages, newMessages);
     });
@@ -42,21 +83,48 @@ export default function App() {
 
   const respondToUser = (userMessages) => {
     console.log("User message text:", userMessages[0].text);
-
+    console.log(respond);
     // Simple chatbot logic (aka Checkpoint 2 onwards) here!
-
-    addBotMessage("I am da response!");
+    if (respond) {
+      if (userMessages[0].text == "Yes") {
+        setRespond(false);
+        addBotMessage(question[status]);
+      } else if (userMessages[0].text == "Random Quiz") {
+        setRespond(false);
+        createNewQuiz();
+        console.log(quiz);
+      } else {
+        addBotMessage(
+          "Say 'Yes' or 'Random Question' when you're ready to play!"
+        );
+      }
+    } else {
+      //user is giving an asnwer to a question
+      if (userMessages[0].text == quiz.ans) {
+        addBotMessage("Correct!");
+        console.log("correct ans:", quiz.ans);
+        createNewQuiz();
+      } else {
+        addBotMessage("Sorry, wrong answer.");
+        console.log("correct ans:", quiz.ans);
+        createNewQuiz();
+      }
+    }
   };
 
   const onSend = useCallback((messages = []) => {
     addNewMessage(messages);
-    // setTimeout(() => respondToUser(messages), 1000);
   }, []);
 
   return (
     <GiftedChat
       messages={messages}
-      onSend={(messages) => onSend(messages)}
+      onSend={(messages) => {
+        console.log("messages is:", messages);
+        onSend(messages);
+        console.log("Inside Gited Chat respond: ", respond);
+        setTimeout(() => respondToUser(messages), 1000);
+      }}
       user={{
         _id: 1,
         name: "Baker",

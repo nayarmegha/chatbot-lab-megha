@@ -1,0 +1,22 @@
+  const respondToUser = (userMessages) => {
+    console.log("User message text:", userMessages[0].text);
+    console.log(respond);
+    // Simple chatbot logic (aka Checkpoint 2 onwards) here!
+    if (respond) {
+      if (userMessages[0].text == "Yes") {
+        setRespond(false);
+        addBotMessage(question[status]);
+      } else {
+        addBotMessage("Say 'Yes' when you're ready to play!");
+      }
+    } else {
+      if (userMessages[0].text == answer[status]) {
+        temp = status + 1;
+        setStatus(temp);
+        addBotMessage(question[temp]);
+      } else {
+        addBotMessage("Sorry, wrong answer.");
+        addBotMessage(question[status]);
+      }
+    }
+  };
