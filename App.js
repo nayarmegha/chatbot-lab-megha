@@ -102,12 +102,15 @@ export default function App() {
       if (userMessages[0].text == quiz.ans) {
         temp = score + 1;
         setScore(temp);
-        addBotMessage("Correct!");
+        addBotMessage("Correct! Press 'X' to exit game.");
         console.log(" Your score is: ", score);
         console.log("correct ans:", quiz.ans);
         createNewQuiz();
+      } else if (userMessages[0].text == "X") {
+        mess = "You score is: " + score;
+        addBotMessage(mess);
       } else {
-        addBotMessage("Sorry, wrong answer.");
+        addBotMessage("Sorry, wrong answer. Press 'X' to exit game.");
         console.log("correct ans:", quiz.ans);
         createNewQuiz();
       }
