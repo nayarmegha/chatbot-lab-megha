@@ -16,6 +16,7 @@ export default function App() {
   const [messages, setMessages] = useState([]);
   const [respond, setRespond] = useState(true);
   const [status, setStatus] = useState(0);
+  const [score, setScore] = useState(0);
   const [answer, setAnswer] = useState(["Answer 1", "Answer 2", "Answer 3"]);
   const [question, setQuestion] = useState([
     "Question 1",
@@ -99,7 +100,10 @@ export default function App() {
     } else {
       //user is giving an asnwer to a question
       if (userMessages[0].text == quiz.ans) {
+        temp = score + 1;
+        setScore(temp);
         addBotMessage("Correct!");
+        console.log(" Your score is: ", score);
         console.log("correct ans:", quiz.ans);
         createNewQuiz();
       } else {
