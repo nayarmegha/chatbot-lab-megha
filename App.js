@@ -31,7 +31,7 @@ export default function App() {
     setMessages([
       {
         _id: 1,
-        text: "Hello, welcome to simple trivia! Say 'Yes' when you're ready to play! Say 'Random Quiz' if you want to play a quiz",
+        text: "Hello, welcome to simple trivia! Say 'Random Quiz' when you're ready to play!",
         createdAt: new Date(),
         user: CHATBOT_USER_OBJ,
       },
@@ -94,9 +94,7 @@ export default function App() {
         createNewQuiz();
         console.log(quiz);
       } else {
-        addBotMessage(
-          "Say 'Yes' or 'Random Question' when you're ready to play!"
-        );
+        addBotMessage("Say 'Random Question' when you're ready to play!");
       }
     } else {
       //user is giving an asnwer to a question
